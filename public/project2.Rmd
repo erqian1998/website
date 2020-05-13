@@ -1,0 +1,267 @@
+---
+title: "project2"
+date: "2020-05-13"
+output: pdf_document
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Ruiqian Xu
+rx737
+
+###0. Introduction
+This dataset is about the obisity of UT students. There are 239 observations in this dataset.
+Variable "height" contains the heights in centimeters of 239 UT students.
+Variable "weight" contains the weight in kilograms of 239 UT students.
+Variable "bmi" conatins the bmi of 239 UT students.
+Variable "food_type" contains the food types of 239 UT students, either fast food or home made.
+Variable "obisity" contains the obisity of 239 UT students, either obese or not.
+Variable "age" contains the ages of 239 UT students.
+
+
+###1. MANOVA
+```{R}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+obese <- read.csv("obese.csv")
+
+
+ggplot(obese, aes(x = bmi, y = height)) +  
+  geom_point(alpha = .5) + 
+  geom_density_2d(h=2) + 
+  coord_fixed() + 
+  facet_wrap(~food_type)
+covmats<-obese%>%group_by(food_type)%>%
+  do(covs=cov(.[-(4:5)])) 
+for(i in 1:2){print(as.character(covmats$food_type[i])); 
+  print(covmats$covs[i])}
+#I think the normality assumption is met, but the covariance assuption is not met perfectly.
+
+#H0: For both DVs (bmi, height), means for each food type are equal. 
+#HA: For at least one DV, at least one food type mean is different.
+man1<-manova(cbind(bmi,height)~food_type, data=obese) 
+summary(man1)
+#Since P-value is less than 0.05, overall MANOVA is significant.
+
+summary.aov(man1) 
+#Both significant: For bmi and height, at least one food type differs
+
+pairwise.t.test(obese$bmi, obese$food_type, p.adj="none")
+pairwise.t.test(obese$height, obese$food_type, p.adj="none")
+# Did 1 MANOVA, 2 ANOVA, 2 t tests(5 in total)
+#alpha= 0.05/5= 0.01
+#type1 error is kept at 0.05, but significance level is adjusted to 0.01
+#The two food type groups are found significantly different from each other. 
+
+```
+
+
+###2. Randomization
+```{R}
+summary(aov(age~obisity,data=obese))
+#H0: Obese studetns and non-obese students have the same mean age.
+#HA: Obese students and non-obese students do not have the same mean age.
+Obs_F <- 1.679
+Fs<-replicate(5000,{
+  new<-obese%>%mutate(age=sample(age)) 
+SSW<- new%>%group_by(obisity)%>%summarize(SSW=sum((age-mean(age))^2))%>%       
+  summarize(sum(SSW))%>%pull 
+SSB<- new%>%mutate(mean=mean(age))%>%group_by(obisity)%>%mutate(groupmean=mean(age))%>%       summarize(SSB=sum((mean-groupmean)^2))%>%summarize(sum(SSB))%>%pull 
+(SSB/1)/(SSW/237) })
+hist(Fs, prob=T); abline(v = Obs_F, col="red")
+mean(Fs>Obs_F) 
+
+```
+Since the p-value is 0.2064, which is greater than 0.05, the null hypothesis is rejected and we can conclude that the obese students do not have the same mean age as the non-obese students.
+
+###3. Linear Regression
+```{R}
+#Centering variables
+center_scale <- function(x) {
+    scale(x, scale = FALSE)}
+obese$height_c <-center_scale(obese$height)
+obese$bmi_c <- center_scale(obese$bmi)
+
+#Hepothesis:
+#H0: While controlling for food type, height does not explain variation in bmi 
+#H0: While controlling for height, food type does not explain variation in bmi
+
+#Estimate coeficient
+fit<-lm(bmi_c ~ food_type*height_c, data=obese)
+summary(fit)
+#bmi_c^=0.424-1.357food_type -0.223height_c +0.130food_type*height_c
+#b0=0.424 is the predicted value of bmi_c when food_type and height_c are zero.
+#b1=-1.357 is the slope for food_type on bmi_c when holding height_c constant.
+#For students who eat home made foods, their predicted bmi=0.424-0.223height_c
+#For students who eat fast foods, their predicted bmi=-0.933-0.093height_c
+#b2=-0.223 is the slope for height_c on bmi_c when holding food_type constant.
+
+#Regression plot
+library(ggplot2)
+ggplot(fit, aes(x=height_c, y=bmi_c, color= food_type,main="Regression plot")) + geom_point()+
+  geom_line(aes(y=.fitted), size=1) 
+
+#Checking assumptions
+#Linearity & homoskedasticity assumptions:
+bmi.lm = lm(bmi_c ~ height_c, data=obese) 
+bmi.res = resid(bmi.lm)
+plot(obese$height_c, bmi.res) 
+abline(0, 0) 
+#Linearity and hooskedasticity assumptions are met.
+
+#Normality 
+qqnorm(obese$bmi_c, pch = 1, frame = FALSE, main= "QQplot of bmi")
+qqline(obese$bmi_c, col = "steelblue", lwd = 2)
+qqnorm(obese$height_c, pch = 1, frame = FALSE, main= "QQplot of height")
+qqline(obese$height_c, col = "steelblue", lwd = 2)
+# Normality assumption for both bmi and height is met.
+
+#Robust SE
+library(sandwich)
+library(lmtest)
+bptest(fit) 
+#Before
+summary(fit)$coef[,1:2]
+#After
+coeftest(fit, vcov = vcovHC(fit))[,1:2]
+#p-value is large than 0.05, so the result is not significant. The SE after robust test is generally larger than before.
+
+#Proportion
+summary(fit)
+#The proportion of variation that is explained by my model is r-squared= 0.1304.
+
+```
+
+
+###4. Bootstrapping SE
+```{R}
+library(dplyr)
+boot_dat<- sample_frac(obese, replace=T)
+samp_distn<-replicate(5000, {  
+  boot_dat <- sample_frac(obese, replace=T) 
+fit <- lm(bmi_c~height_c*food_type, data=boot_dat) 
+coef(fit) }) 
+samp_distn %>% t %>% as.data.frame %>% summarize_all(sd)
+#The SE I got in this step is generally smaller than the SE I got from robust test.
+
+```
+
+
+###5. Logistic Regression
+```{R}
+#Interpret coefficient
+library(dplyr)
+library(tidyr)
+library(tidyverse) 
+library(lmtest)
+obese <- obese %>% mutate(y = case_when(food_type=="fastfood" ~ "1", food_type=="home made" ~ "0"))
+obese$y <- factor(obese$y, labels=c("0","1")) 
+fit1<-glm(y~height+weight, family="binomial", data=obese) 
+coeftest(fit1)
+exp(coef(fit1))
+#Controlling for weight, for one unit increase in height, odds of food_type by a factor of e^-0.053.
+#Controlling for height, for every 1-unit increase in weight, odds of food_type change by a factor of e^0.018
+
+
+#Functions setting up
+library(knitr)
+library(tidyverse)
+class_diag<-function(probs,truth){
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+#Model computation
+prob <- predict(fit1, newdata=obese, type="response")  
+class_diag(prob,obese$y)
+#Accuracy is 0.611, TPR is 0.826, TNR is 0.284, PPV is 0.636.
+
+
+#Confusion matrix
+pred <- ifelse(prob > 0.5, 1, 0)
+table(prediction = pred, truth = obese$y)%>% addmargins
+
+##Density plot
+obese$logit<-predict(fit1,type="link")
+obese%>%ggplot()+geom_density(aes(logit,color=food_type,fill=food_type), alpha=.4)+
+  theme(legend.position=c(.85,.85))+geom_vline(xintercept=0)+xlab("logit (log-odds)")+
+  geom_rug(aes(logit,color=food_type))
+
+#ROC plot
+library(pROC)
+roc(fit1$y,fit1$fitted.values, plot= TRUE, legacy.axes=TRUE,print.auc=TRUE)
+#AUC is 0.640.
+
+#10-fold CV
+set.seed(1234)
+k=10
+data <- obese %>% sample_frac 
+folds <- ntile(1:nrow(data),n=10) 
+legend<-NULL 
+for(i in 1:k){  
+  train <- data[folds!=i,] 
+   test <- data[folds==i,] 
+truth <- test$y 
+fit2 <- glm(y~height+weight, data=train, family="binomial")  
+probs2 <- predict(fit2, newdata=test, type="response")  
+legend<-rbind(legend,class_diag(probs2,truth)) 
+} 
+summarize_all(legend,mean)
+#Accuracy is 0.607, sensitivity is 0.832. AUC is 0.634, which is smaller than the previous step.
+
+
+
+
+```
+
+
+###6. LASSO
+```{R}
+#LASSO coefficient
+library(glmnet)
+set.seed(1234)
+
+fit3 <- glm(y~(.-food_type), data=obese, family="binomial") 
+z <- as.matrix(obese$y) 
+x <- model.matrix(fit3, data=obese) 
+cv <- cv.glmnet(x,z,family='binomial')
+lasso<-glmnet(x,z,family='binomial',lambda=cv$lambda.1se) 
+coef(lasso)
+#There is nothing remained after the selection.
+
+#10-fold CV
+#Since there is no remained variable, 10-fold CV is not applicable.
+
+
+
+
+```
+
+
+
+
+

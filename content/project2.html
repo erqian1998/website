@@ -1,0 +1,433 @@
+---
+title: "project2"
+date: "2020-05-13"
+output: pdf_document
+
+---
+
+
+
+<p>Ruiqian Xu rx737</p>
+<div id="introduction" class="section level3">
+<h3>0. Introduction</h3>
+<p>This dataset is about the obisity of UT students. There are 239 observations in this dataset. Variable “height” contains the heights in centimeters of 239 UT students. Variable “weight” contains the weight in kilograms of 239 UT students. Variable “bmi” conatins the bmi of 239 UT students. Variable “food_type” contains the food types of 239 UT students, either fast food or home made. Variable “obisity” contains the obisity of 239 UT students, either obese or not. Variable “age” contains the ages of 239 UT students.</p>
+</div>
+<div id="manova" class="section level3">
+<h3>1. MANOVA</h3>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(tidyr)
+library(ggplot2)
+obese &lt;- read.csv(&quot;obese.csv&quot;)
+
+
+ggplot(obese, aes(x = bmi, y = height)) +  
+  geom_point(alpha = .5) + 
+  geom_density_2d(h=2) + 
+  coord_fixed() + 
+  facet_wrap(~food_type)</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>covmats&lt;-obese%&gt;%group_by(food_type)%&gt;%
+  do(covs=cov(.[-(4:5)])) 
+for(i in 1:2){print(as.character(covmats$food_type[i])); 
+  print(covmats$covs[i])}</code></pre>
+<pre><code>## [1] &quot;fastfood&quot;
+## [[1]]
+##            height     weight        bmi       age
+## height  74.359703   9.785111 -16.545309  1.955274
+## weight   9.785111 173.240045  56.967900 -4.725767
+## bmi    -16.545309  56.967900  24.353098 -2.254322
+## age      1.955274  -4.725767  -2.254322  6.293658
+## 
+## [1] &quot;home made&quot;
+## [[1]]
+##           height      weight        bmi        age
+## height 78.353191  35.2638298 -7.2382979  0.4872340
+## weight 35.263830 185.4013438 54.3737962 -0.9284434
+## bmi    -7.238298  54.3737962 20.5258679 -0.4772676
+## age     0.487234  -0.9284434 -0.4772676  5.3587906</code></pre>
+<pre class="r"><code>#I think the normality assumption is met, but the covariance assuption is not met perfectly.
+
+#H0: For both DVs (bmi, height), means for each food type are equal. 
+#HA: For at least one DV, at least one food type mean is different.
+man1&lt;-manova(cbind(bmi,height)~food_type, data=obese) 
+summary(man1)</code></pre>
+<pre><code>##            Df   Pillai approx F num Df den Df    Pr(&gt;F)    
+## food_type   1 0.058491   7.3307      2    236 0.0008153 ***
+## Residuals 237                                              
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>#Since P-value is less than 0.05, overall MANOVA is significant.
+
+summary.aov(man1) </code></pre>
+<pre><code>##  Response bmi :
+##              Df Sum Sq Mean Sq F value   Pr(&gt;F)   
+## food_type     1  204.4 204.427  8.9523 0.003064 **
+## Residuals   237 5411.9  22.835                    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response height :
+##              Df  Sum Sq Mean Sq F value   Pr(&gt;F)   
+## food_type     1   781.8  781.83  10.295 0.001518 **
+## Residuals   237 17998.6   75.94                    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>#Both significant: For bmi and height, at least one food type differs
+
+pairwise.t.test(obese$bmi, obese$food_type, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  obese$bmi and obese$food_type 
+## 
+##           fastfood
+## home made 0.0031  
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(obese$height, obese$food_type, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  obese$height and obese$food_type 
+## 
+##           fastfood
+## home made 0.0015  
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code># Did 1 MANOVA, 2 ANOVA, 2 t tests(5 in total)
+#alpha= 0.05/5= 0.01
+#type1 error is kept at 0.05, but significance level is adjusted to 0.01
+#The two food type groups are found significantly different from each other. </code></pre>
+</div>
+<div id="randomization" class="section level3">
+<h3>2. Randomization</h3>
+<pre class="r"><code>summary(aov(age~obisity,data=obese))</code></pre>
+<pre><code>##              Df Sum Sq Mean Sq F value Pr(&gt;F)
+## obisity       1    9.9   9.877   1.679  0.196
+## Residuals   237 1393.9   5.881</code></pre>
+<pre class="r"><code>#H0: Obese studetns and non-obese students have the same mean age.
+#HA: Obese students and non-obese students do not have the same mean age.
+Obs_F &lt;- 1.679
+Fs&lt;-replicate(5000,{
+  new&lt;-obese%&gt;%mutate(age=sample(age)) 
+SSW&lt;- new%&gt;%group_by(obisity)%&gt;%summarize(SSW=sum((age-mean(age))^2))%&gt;%       
+  summarize(sum(SSW))%&gt;%pull 
+SSB&lt;- new%&gt;%mutate(mean=mean(age))%&gt;%group_by(obisity)%&gt;%mutate(groupmean=mean(age))%&gt;%       summarize(SSB=sum((mean-groupmean)^2))%&gt;%summarize(sum(SSB))%&gt;%pull 
+(SSB/1)/(SSW/237) })
+hist(Fs, prob=T); abline(v = Obs_F, col=&quot;red&quot;)</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>mean(Fs&gt;Obs_F) </code></pre>
+<pre><code>## [1] 0.1986</code></pre>
+<p>Since the p-value is 0.2064, which is greater than 0.05, the null hypothesis is rejected and we can conclude that the obese students do not have the same mean age as the non-obese students.</p>
+</div>
+<div id="linear-regression" class="section level3">
+<h3>3. Linear Regression</h3>
+<pre class="r"><code>#Centering variables
+center_scale &lt;- function(x) {
+    scale(x, scale = FALSE)}
+obese$height_c &lt;-center_scale(obese$height)
+obese$bmi_c &lt;- center_scale(obese$bmi)
+
+#Hepothesis:
+#H0: While controlling for food type, height does not explain variation in bmi 
+#H0: While controlling for height, food type does not explain variation in bmi
+
+#Estimate coeficient
+fit&lt;-lm(bmi_c ~ food_type*height_c, data=obese)
+summary(fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = bmi_c ~ food_type * height_c, data = obese)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -9.6027 -3.1474 -0.1526  3.1248  9.3145 
+## 
+## Coefficients:
+##                             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                  0.42432    0.38299   1.108   0.2690    
+## food_typehome made          -1.35726    0.61361  -2.212   0.0279 *  
+## height_c                    -0.22250    0.04393  -5.065 8.26e-07 ***
+## food_typehome made:height_c  0.13012    0.06868   1.895   0.0594 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.53 on 235 degrees of freedom
+## Multiple R-squared:  0.1413, Adjusted R-squared:  0.1304 
+## F-statistic: 12.89 on 3 and 235 DF,  p-value: 7.938e-08</code></pre>
+<pre class="r"><code>#bmi_c^=0.424-1.357food_type -0.223height_c +0.130food_type*height_c
+#b0=0.424 is the predicted value of bmi_c when food_type and height_c are zero.
+#b1=-1.357 is the slope for food_type on bmi_c when holding height_c constant.
+#For students who eat home made foods, their predicted bmi=0.424-0.223height_c
+#For students who eat fast foods, their predicted bmi=-0.933-0.093height_c
+#b2=-0.223 is the slope for height_c on bmi_c when holding food_type constant.
+
+#Regression plot
+library(ggplot2)
+ggplot(fit, aes(x=height_c, y=bmi_c, color= food_type,main=&quot;Regression plot&quot;)) + geom_point()+
+  geom_line(aes(y=.fitted), size=1) </code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>#Checking assumptions
+#Linearity &amp; homoskedasticity assumptions:
+bmi.lm = lm(bmi_c ~ height_c, data=obese) 
+bmi.res = resid(bmi.lm)
+plot(obese$height_c, bmi.res) 
+abline(0, 0) </code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<pre class="r"><code>#Linearity and hooskedasticity assumptions are met.
+
+#Normality 
+qqnorm(obese$bmi_c, pch = 1, frame = FALSE, main= &quot;QQplot of bmi&quot;)
+qqline(obese$bmi_c, col = &quot;steelblue&quot;, lwd = 2)</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-3-3.png" width="672" /></p>
+<pre class="r"><code>qqnorm(obese$height_c, pch = 1, frame = FALSE, main= &quot;QQplot of height&quot;)
+qqline(obese$height_c, col = &quot;steelblue&quot;, lwd = 2)</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-3-4.png" width="672" /></p>
+<pre class="r"><code># Normality assumption for both bmi and height is met.
+
+#Robust SE
+library(sandwich)
+library(lmtest)</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>bptest(fit) </code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit
+## BP = 2.7559, df = 3, p-value = 0.4308</code></pre>
+<pre class="r"><code>#Before
+summary(fit)$coef[,1:2]</code></pre>
+<pre><code>##                               Estimate Std. Error
+## (Intercept)                  0.4243211 0.38298530
+## food_typehome made          -1.3572584 0.61360663
+## height_c                    -0.2225037 0.04393101
+## food_typehome made:height_c  0.1301233 0.06867501</code></pre>
+<pre class="r"><code>#After
+coeftest(fit, vcov = vcovHC(fit))[,1:2]</code></pre>
+<pre><code>##                               Estimate Std. Error
+## (Intercept)                  0.4243211 0.39133458
+## food_typehome made          -1.3572584 0.63213666
+## height_c                    -0.2225037 0.04407585
+## food_typehome made:height_c  0.1301233 0.06457513</code></pre>
+<pre class="r"><code>#p-value is large than 0.05, so the result is not significant. The SE after robust test is generally larger than before.
+
+#Proportion
+summary(fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = bmi_c ~ food_type * height_c, data = obese)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -9.6027 -3.1474 -0.1526  3.1248  9.3145 
+## 
+## Coefficients:
+##                             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                  0.42432    0.38299   1.108   0.2690    
+## food_typehome made          -1.35726    0.61361  -2.212   0.0279 *  
+## height_c                    -0.22250    0.04393  -5.065 8.26e-07 ***
+## food_typehome made:height_c  0.13012    0.06868   1.895   0.0594 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.53 on 235 degrees of freedom
+## Multiple R-squared:  0.1413, Adjusted R-squared:  0.1304 
+## F-statistic: 12.89 on 3 and 235 DF,  p-value: 7.938e-08</code></pre>
+<pre class="r"><code>#The proportion of variation that is explained by my model is r-squared= 0.1304.</code></pre>
+</div>
+<div id="bootstrapping-se" class="section level3">
+<h3>4. Bootstrapping SE</h3>
+<pre class="r"><code>library(dplyr)
+boot_dat&lt;- sample_frac(obese, replace=T)
+samp_distn&lt;-replicate(5000, {  
+  boot_dat &lt;- sample_frac(obese, replace=T) 
+fit &lt;- lm(bmi_c~height_c*food_type, data=boot_dat) 
+coef(fit) }) 
+samp_distn %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept)   height_c food_typehome made height_c:food_typehome made
+## 1   0.3852395 0.04331141          0.6266721                  0.06404332</code></pre>
+<pre class="r"><code>#The SE I got in this step is generally smaller than the SE I got from robust test.</code></pre>
+</div>
+<div id="logistic-regression" class="section level3">
+<h3>5. Logistic Regression</h3>
+<pre class="r"><code>#Interpret coefficient
+library(dplyr)
+library(tidyr)
+library(tidyverse) </code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ tibble  2.1.3     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.4.0
+## ✓ purrr   0.3.3</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(lmtest)
+obese &lt;- obese %&gt;% mutate(y = case_when(food_type==&quot;fastfood&quot; ~ &quot;1&quot;, food_type==&quot;home made&quot; ~ &quot;0&quot;))
+obese$y &lt;- factor(obese$y, labels=c(&quot;0&quot;,&quot;1&quot;)) 
+fit1&lt;-glm(y~height+weight, family=&quot;binomial&quot;, data=obese) 
+coeftest(fit1)</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##              Estimate Std. Error z value  Pr(&gt;|z|)    
+## (Intercept)  8.341205   2.723603  3.0626 0.0021945 ** 
+## height      -0.053114   0.015998 -3.3201 0.0008999 ***
+## weight       0.018121   0.010365  1.7483 0.0804162 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coef(fit1))</code></pre>
+<pre><code>##  (Intercept)       height       weight 
+## 4193.1399498    0.9482719    1.0182859</code></pre>
+<pre class="r"><code>#Controlling for weight, for one unit increase in height, odds of food_type by a factor of e^-0.053.
+#Controlling for height, for every 1-unit increase in weight, odds of food_type change by a factor of e^0.018
+
+
+#Functions setting up
+library(knitr)
+library(tidyverse)
+class_diag&lt;-function(probs,truth){
+  
+  tab&lt;-table(factor(probs&gt;.5,levels=c(&quot;FALSE&quot;,&quot;TRUE&quot;)),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE &amp; is.logical(truth)==FALSE) truth&lt;-as.numeric(truth)-1
+  
+  ord&lt;-order(probs, decreasing=TRUE)
+  probs &lt;- probs[ord]; truth &lt;- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup&lt;-c(probs[-1]&gt;=probs[-length(probs)], FALSE)
+  TPR&lt;-c(0,TPR[!dup],1); FPR&lt;-c(0,FPR[!dup],1)
+  
+  n &lt;- length(TPR)
+  auc&lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+#Model computation
+prob &lt;- predict(fit1, newdata=obese, type=&quot;response&quot;)  
+class_diag(prob,obese$y)</code></pre>
+<pre><code>##         acc      sens      spec       ppv       auc
+## 1 0.6108787 0.8263889 0.2842105 0.6363636 0.6395833</code></pre>
+<pre class="r"><code>#Accuracy is 0.611, TPR is 0.826, TNR is 0.284, PPV is 0.636.
+
+
+#Confusion matrix
+pred &lt;- ifelse(prob &gt; 0.5, 1, 0)
+table(prediction = pred, truth = obese$y)%&gt;% addmargins</code></pre>
+<pre><code>##           truth
+## prediction   0   1 Sum
+##        0    27  25  52
+##        1    68 119 187
+##        Sum  95 144 239</code></pre>
+<pre class="r"><code>##Density plot
+obese$logit&lt;-predict(fit1,type=&quot;link&quot;)
+obese%&gt;%ggplot()+geom_density(aes(logit,color=food_type,fill=food_type), alpha=.4)+
+  theme(legend.position=c(.85,.85))+geom_vline(xintercept=0)+xlab(&quot;logit (log-odds)&quot;)+
+  geom_rug(aes(logit,color=food_type))</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>#ROC plot
+library(pROC)</code></pre>
+<pre><code>## Type &#39;citation(&quot;pROC&quot;)&#39; for a citation.</code></pre>
+<pre><code>## 
+## Attaching package: &#39;pROC&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     cov, smooth, var</code></pre>
+<pre class="r"><code>roc(fit1$y,fit1$fitted.values, plot= TRUE, legacy.axes=TRUE,print.auc=TRUE)</code></pre>
+<pre><code>## Setting levels: control = 0, case = 1</code></pre>
+<pre><code>## Setting direction: controls &lt; cases</code></pre>
+<p><img src="/project2_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<pre><code>## 
+## Call:
+## roc.default(response = fit1$y, predictor = fit1$fitted.values,     plot = TRUE, legacy.axes = TRUE, print.auc = TRUE)
+## 
+## Data: fit1$fitted.values in 95 controls (fit1$y 0) &lt; 144 cases (fit1$y 1).
+## Area under the curve: 0.6396</code></pre>
+<pre class="r"><code>#AUC is 0.640.
+
+#10-fold CV
+set.seed(1234)
+k=10
+data &lt;- obese %&gt;% sample_frac 
+folds &lt;- ntile(1:nrow(data),n=10) 
+legend&lt;-NULL 
+for(i in 1:k){  
+  train &lt;- data[folds!=i,] 
+   test &lt;- data[folds==i,] 
+truth &lt;- test$y 
+fit2 &lt;- glm(y~height+weight, data=train, family=&quot;binomial&quot;)  
+probs2 &lt;- predict(fit2, newdata=test, type=&quot;response&quot;)  
+legend&lt;-rbind(legend,class_diag(probs2,truth)) 
+} 
+summarize_all(legend,mean)</code></pre>
+<pre><code>##         acc      sens      spec  ppv       auc
+## 1 0.6068841 0.8319686 0.2938598 0.64 0.6336341</code></pre>
+<pre class="r"><code>#Accuracy is 0.607, sensitivity is 0.832. AUC is 0.634, which is smaller than the previous step.</code></pre>
+</div>
+<div id="lasso" class="section level3">
+<h3>6. LASSO</h3>
+<pre class="r"><code>#LASSO coefficient
+library(glmnet)</code></pre>
+<pre><code>## Loading required package: Matrix</code></pre>
+<pre><code>## 
+## Attaching package: &#39;Matrix&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
+## 
+##     expand, pack, unpack</code></pre>
+<pre><code>## Loading required package: foreach</code></pre>
+<pre><code>## 
+## Attaching package: &#39;foreach&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:purrr&#39;:
+## 
+##     accumulate, when</code></pre>
+<pre><code>## Loaded glmnet 2.0-16</code></pre>
+<pre><code>## 
+## Attaching package: &#39;glmnet&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:pROC&#39;:
+## 
+##     auc</code></pre>
+<pre class="r"><code>set.seed(1234)
+
+fit3 &lt;- glm(y~(.-food_type), data=obese, family=&quot;binomial&quot;) 
+z &lt;- as.matrix(obese$y) 
+x &lt;- model.matrix(fit3, data=obese) 
+cv &lt;- cv.glmnet(x,z,family=&#39;binomial&#39;)
+lasso&lt;-glmnet(x,z,family=&#39;binomial&#39;,lambda=cv$lambda.1se) 
+coef(lasso)</code></pre>
+<pre><code>## 10 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                    s0
+## (Intercept) 0.4159364
+## (Intercept) 0.0000000
+## height      .        
+## weight      .        
+## bmi         .        
+## obisityyes  .        
+## age         .        
+## height_c    .        
+## bmi_c       .        
+## logit       .</code></pre>
+<pre class="r"><code>#There is nothing remained after the selection.
+
+#10-fold CV
+#Since there is no remained variable, 10-fold CV is not applicable.</code></pre>
+</div>

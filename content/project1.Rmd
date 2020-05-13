@@ -1,0 +1,175 @@
+---
+title: "Project1"
+date: "2020-05-13"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+
+```
+Name: Ruiqian Xu
+EID:rx737
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+0. Introduction
+
+
+I have chosen two datasets: "Provinces" and "City". The "Provinces" dataset contains some provinces in China that have been influenced by the Corona virus, the cities in those provinces, the confirmed cases in those provinces till 3/1/2020 and the death cases in those province till 3/1/2020. The "City" dataset contains some cities in China that have been influenced by the Corona virus, the confirmed cases in those cities till 3/1/2020 and the death cases in those cities till 3/1/ 2020. 
+I acquired the datasets from kaggle.com.
+These datasets interest me because they are about Corona virus. As is well known, the Corona virus is a serious problem to the whole world, so I would like to figure out how my homeland-- China was influenced.
+Potential expectations might be infection based on proximity to Hubei, the original source of the pandemic. In fact, if I hadn't already known about Hubei, this analysis might reveal Hubei as the source.
+
+1. Reading Datasets & Tidying
+```{R}
+Provinces <- read.csv("Provinces.csv")
+City <- read.csv("City.csv")
+library(tidyr)
+library(dplyr)
+tidy_confirm<-Provinces %>% group_by(provinceEnglishName) %>% mutate(row=row_number()) %>% tidyr:: pivot_wider(names_from="provinceEnglishName", values_from ="province_confirmedCount") %>% select(-row) 
+origin <- tidy_confirm %>% pivot_longer(-c(1:2), names_to = "Province", values_to = "Confirmed") %>% na.omit()
+
+
+```
+For the "Provinces" dataset, I used pivot_wider function to make each observation in the "provinceEnglishName" column a single variable. Then, I used pivot_longer function to intergrate those new varables into one column again.
+
+
+
+2. Joining Datasets
+```{R}
+ merged <- origin %>% full_join(City, by = "cityEnglishName")
+
+```
+I chose "full join" as my joining method because I do not want to miss any data from either dataset. 
+In this case, nothing got dropped.
+
+
+3. Wrangling
+(1)Using the six dplyr fuctions
+```{R}
+merged %>% filter(`Province`=="Hubei")
+merged %>% arrange(desc(Confirmed))
+merged %>% select(-c(1:4)) 
+merged %>% mutate(city_sick = `city_confirmedCount`- `city_deadCount`)
+merged %>% group_by(`Province`)
+merged %>% summarize_if(is.numeric, max, na.rm=T)
+```
+In line #58-63, I used the six core dplyr functions seperately. #58, I filtered all the observations are from Hubei province. #59, I arranged the "Confirmed" variable descendently, from the lowest number of confirmed cases to the highest. #60, I selected all columns except column 1 to 4. #61, I created a new column called city_sick which is a difference between city confirmed counts and city death counts. #62, I grouped the dataset by province. #63, I summarized the max values of all numeric variables in the dataset "merged".
+
+(2)Ten different summary functions
+```{R}
+merged %>%   group_by(`Province`) %>%  summarize(mean_province_sick=mean(Confirmed-province_deadCount))
+merged %>%   group_by(`cityEnglishName`) %>%  summarize(mean_city_sick=mean(city_confirmedCount-city_deadCount,na.rm=T))
+merged %>%   group_by(`Province`) %>%  summarize(province_confirmed_total=sum(city_confirmedCount,na.rm=T))
+merged %>%   group_by(`Province`) %>%  summarize(province_death_total=sum(city_deadCount,na.rm=T))
+merged %>%   group_by(`cityEnglishName`) %>%  summarize(Other_City_Death=province_deadCount-city_deadCount)
+merged %>%   group_by(`cityEnglishName`) %>%  summarize(Other_City_confirmed=Confirmed-city_confirmedCount)
+merged %>% summarize(n_rows=n(), n_province=n_distinct(`Province`))
+merged %>% summarize(n_rows=n(), n_city=n_distinct(`cityEnglishName`))
+merged %>% summarize_if(is.numeric, min, na.rm=T)
+merged %>% summarize_if(is.numeric, mean, na.rm=T)
+merged %>% summarize_if(is.numeric, sd, na.rm=T)
+```
+In line 69-79, I made 11 summary functions, line 69-74 are with group_by function as well. #69, I grouped the dataset by province and summarized the difference between province confirmed counts and province death counts. #70, I grouped the dataset by city name and I summarized the difference between city confirmed counts and city death counts. #71, I grouped the dataset by province and summarized the sum of city confirmed counts. #72, I grouped the dataset by province and summarized the sum of city death counts. #73, I grouped the dataset by city name and summarized the difference between province death counts and city death counts. #74, I grouped the dataset by city name and summarized the difference between province confirmed and city confirmed. #75, I summarized the number of rows in this dataset and number of different provinces. #76, I summarized the number of rows in this dataset and number of different cities. #77, I summarized the min values of all numeric variables in this dataset. #78, I summarized the mean values of all numeric variables in this dataset. #79, I summarized the standard deviation of all numeric variables in this dataset.
+
+
+4. Visualizing
+```{R}
+library(ggplot2)
+merged %>% ggplot(aes(Confirmed,province_deadCount, color=Province)) + geom_point()+scale_x_continuous(breaks=seq(0,70000,5000))+ scale_y_continuous(breaks=seq(0,3000,500)) + theme(axis.text.x = element_text(angle = 90)) + xlab("Province Confirmed Cases")+ ylab("Province Death Cases")+ggtitle("Province Death V.S. Confirmed Cases")
+
+
+
+merged %>% group_by(Province) %>% summarize(mean_confirmed=mean(Confirmed,na.rm=T), sd_confirmed=sd(city_confirmedCount, na.rm=T),count_confirmed=n(),se_confirmed=(sd_confirmed/sqrt(n()))) %>%
+ggplot(aes(x = Province, y = mean_confirmed))+  geom_bar(stat="summary",fun.y="mean") + geom_errorbar(aes(x=Province, y=mean_confirmed, ymin=mean_confirmed-se_confirmed, ymax=mean_confirmed+se_confirmed))+theme(axis.text.x = element_text(angle = 90))+ggtitle("Mean Confirmed Cases of Provinces") + ylab("Mean Confirmed Cases") + xlab("Province")
+
+
+merged %>% filter(Province=="Hubei") %>% ggplot(aes(city_confirmedCount,city_deadCount, color=cityEnglishName)) + geom_point()+scale_x_continuous(breaks=seq(0,70000,5000))+ scale_y_continuous(breaks=seq(0,3000,500))+theme(axis.text.x = element_text(angle = 90))+ggtitle("City Death V.S. Confirmed Cases") + ylab("City Death Count") + xlab("City Confirmed Count")
+
+```
+The first ggplot presents a relationship between province death and province confirmed counts. From the plot, Hubei province shows a much higher frequency of both death and confirmed cases. Since the number of cases is so high in Hubei, the dots presents other provinces are clusted together, we cannot really tell the relations hip between province confirmed cases and province death cases. 
+The second barplot presents the average confirmed cases of each province. From the plot, Hubei provine has the highest mean confirmed cases.
+The third ggplot presents a relationship between city death and city confirmed counts in Hubei province. From the plot, Wuhan city has the highest frequency of both death and confirmed cases. Even the number of counts is much higher in Wuhan than in other cities in Hubei province, we could still see a positive linear relationship between city confirmed counts and city death counts in Hubei province.
+
+5. Dimensionality Reduction 
+(1) All provinces are included
+```{R}
+library(cluster)
+merged1 <- na.omit(merged)
+merged2 <- scale(merged1$Confirmed)
+sil_width <- c(NA)
+
+for(i in 2:10){
+  
+  pam_fit <- pam(merged2,
+                 diss = TRUE,
+                 k = i)
+  
+  sil_width[i] <- pam_fit$silinfo$avg.width
+  
+}
+plot(1:10, sil_width,
+     xlab = "Number of clusters",
+     ylab = "Silhouette Width")
+lines(1:10, sil_width)
+pam2<-merged1%>%select(-c(1,3))%>%pam(2) 
+final<-merged1%>%mutate(cluster=as.factor(pam2$clustering)) 
+confmat<-final%>%group_by(Province)%>%count(cluster)%>%arrange(desc(n))%>%  pivot_wider(names_from="cluster",values_from="n",values_fill = list('n'=0)) 
+confmat
+round(sum(diag(as.matrix(confmat[,-c(1,3)])))/sum(confmat[,-c(1,3)]),4)
+ggplot(final, aes(x=Confirmed,y=province_deadCount, color=cluster))+geom_point()+ggtitle("Province Death V.S. Confirmed") + ylab("Province Death Cases") + xlab("Province Comfirmed Cases")
+
+```
+I used cluster with PMA to analyze the data. According to the sil_width function, I got number of clusters equals to 2. Culster 1 stands for the provinces other than Hubei, while cluster 2 basicly stands for Hubei province. But the ggplot shows the two cluster groups are really far apart. I got the Average Silhouette Width as 0.1979, which is really low and shows no substantial structure has been found between the two clusters. I think the reason why I got this result is the Hubei province has a much higher number of both death and confirmed cases than in other provinces. That makes the scale of the plot really big, thus we cannot see the exact distribution of other provinces. To get a better sence of the distribution of other provinces, I am going to take Hubei province out and make a new plot of other provinces.
+
+(2) Take Hubei province out
+
+```{R}
+library(cluster)
+no_Hubei <- merged[merged$Province != "Hubei", ]
+no_Hubei1 <- na.omit(no_Hubei)
+no_Hubei2 <- scale(no_Hubei1$Confirmed)
+sil_width <- c(NA)
+
+for(i in 2:10){
+  
+  pam_fit1 <- pam(no_Hubei2,
+                 diss = TRUE,
+                 k = i)
+  
+  sil_width[i] <- pam_fit1$silinfo$avg.width
+  
+}
+plot(1:10, sil_width,
+     xlab = "Number of clusters",
+     ylab = "Silhouette Width")
+lines(1:10, sil_width)
+pam3<-no_Hubei1%>%select(-c(1,3))%>%pam(2) 
+final1<-no_Hubei1%>%mutate(cluster=as.factor(pam3$clustering)) 
+confmat1<-final1%>%group_by(Province)%>%count(cluster)%>%arrange(desc(n))%>%  pivot_wider(names_from="cluster",values_from="n",values_fill = list('n'=0)) 
+confmat1
+round(sum(diag(as.matrix(confmat[,-c(1,3)])))/sum(confmat[,-c(1,3)]),4)
+ggplot(final1, aes(x=Confirmed,y=province_deadCount, color=cluster))+geom_point()+ggtitle("Province Death V.S. Confirmed") + ylab("Province Death Cases") + xlab("Province Comfirmed Cases")
+```
+I used cluster with PMA to analyze the data again. According to the sil_width function, I got number of clusters equals to 2. Culster 1 stands for Guangdong, Hunan, Anhui, Henan provinces, while cluster 2 stands for the provinces other than Gunagdong, Hunan, Anhui, Henan and Hubei provinces. But the ggplot shows cluster2 group is not as clusted as cluster1 group. I got the Average Silhouette Width as 0.1979 again, which is really low and shows no substantial structure has been found between the two clusters. I think the reason why I got this result is there is no obvious linear relationship between province confirmed cases and province death cases, instead of the interuption of Hubei province.
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,211 @@
+﻿cityEnglishName,city_confirmedCount,city_deadCount
+Anqing,83,0
+Bengbu,160,5
+Bozhou,108,0
+Chizhou,17,0
+Chuzhou,13,0
+Fuyang,155,0
+Hefei,174,1
+Huaibei,27,0
+Huainan,27,0
+Huangshan,9,0
+Lu'an,69,0
+Ma'anshan,38,0
+Suzhou,41,0
+Tongling,29,0
+Wuhu,34,0
+Xuancheng,6,0
+Changping District,29,0
+Chaoyang District,71,0
+Daxing District,39,0
+Dongcheng District,13,0
+Fangshan District,16,0
+Fengtai District,43,0
+Haidian District,63,0
+Huairou District,7,0
+Mentougou District,3,0
+Banan District,6,0
+Bishan District,9,0
+Changshou District,22,0
+Chengkou County,2,0
+Dadukou District,7,0
+Dazu District,14,0
+Dianjiang County,20,0
+Fengdu County,10,0
+Fengjie County,22,0
+Fuling District,5,0
+Hechuan District,23,0
+Jiangbei District,28,0
+Jiangjin District,4,0
+Jiulongpo District,21,1
+Kaizhou District,21,1
+Liangjiang New Area,17,0
+Liangping District,4,0
+Nan'an District,15,0
+Pengshui Miao and Tujia Autonomous County,2,0
+Qianjiang Tujia and Miao Autonomous County,2,0
+Qijiang District,23,0
+Rongchang District,9,0
+Shapingba District,9,0
+Shizhu Tujia Autonomous County,15,0
+Tongliang District,10,0
+Tongnan District,18,0
+Wansheng District,1,0
+Wanzhou District,118,4
+Wulong District,1,0
+Wushan County,10,0
+Wuxi County,14,0
+Xiushan Tujia and Miao Autonomous County,1,0
+Yongchuan District,5,0
+Youyang Tujia and Miao Autonomous County,1,0
+Yubei District,17,0
+Yunyang County,25,0
+Yuzhong District,20,0
+Zhong County,21,0
+,1,0
+Fuzhou,72,1
+Longyan,6,0
+Nanping,20,0
+Ningde,26,0
+Putian,56,0
+Quanzhou,47,0
+Sanming,14,0
+Xiamen,35,0
+Zhangzhou,20,0
+Baiyin,4,0
+Dingxi,9,0
+Gannan,8,0
+Lanzhou,36,2
+Linxia,3,0
+Longnan,4,0
+Pingliang,9,0
+Qingyang,3,0
+Tianshui,12,0
+Chaozhou,5,0
+Dongguan,99,1
+Foshan,84,0
+Guangzhou,346,1
+Heyuan,4,0
+Huizhou,62,0
+Jiangmen,23,0
+Jieyang,8,0
+Maoming,14,0
+Meizhou,16,0
+Qingyuan,12,0
+Shantou,25,0
+Shanwei,5,0
+Shaoguan,10,0
+Shenzhen,418,3
+Yangjiang,14,0
+Zhanjiang,22,0
+Zhaoqing,19,1
+Zhongshan,66,0
+Zhuhai,98,1
+Baise,3,0
+Beihai,44,1
+Fangchenggang,19,0
+Guigang,8,0
+Guilin,32,0
+Hechi,28,1
+Hezhou,4,0
+Laibin,11,0
+Liuzhou,24,0
+Nanning,55,0
+Qinzhou,8,0
+Wuzhou,5,0
+Yulin,11,0
+Anshun,4,0
+Bijie,23,0
+Guiyang,36,1
+Liupanshui,10,1
+Qiandongnan,10,0
+Qiannan,17,0
+Qianxinan,4,0
+Tongren,10,0
+Zunyi,32,0
+Baoting Li and Miao Autonomous County,3,0
+Changjiang Li Autonomous County,7,0
+Chengmai County,9,1
+Danzhou,15,1
+Ding'an County,3,1
+Dongfang,3,0
+Haikou,39,0
+Ledong Li Autonomous County,2,0
+Lingao County,6,0
+Lingshui Li Autonomous County,4,0
+Qionghai,6,1
+Qiongzhong Li and Miao Autonomous County,1,0
+Sanya,54,1
+Wanning,13,0
+Wenchang,3,0
+Baoding,32,0
+Cangzhou,48,3
+Handan,32,0
+Hengshui,8,0
+Langfang,30,0
+Qinhuangdao,10,1
+Shijiazhuang,29,0
+Tangshan,58,1
+Xingtai,23,1
+Zhangjiakou,41,0
+Daqing,26,1
+Daxinganling,2,0
+Harbin,198,4
+Hegang,5,0
+Heihe,14,0
+Jiamusi,15,0
+Jixi,46,0
+Mudanjiang,14,0
+Qiqihar,43,1
+Qitaihe,17,0
+Shuangyashan,52,3
+Suihua,47,4
+Yichun,1,0
+Anyang,53,0
+Hebi,19,0
+Jiaozuo,32,1
+Jiyuan,5,0
+Kaifeng,26,0
+Luohe,35,0
+Luoyang,31,1
+Nanyang,156,3
+Pingdingshan,58,1
+Puyang,17,0
+Sanmenxia,7,1
+Shangqiu,91,3
+Xinxiang,57,3
+Xinyang,274,2
+Xuchang,39,1
+Zhengzhou,157,5
+Zhoukou,76,1
+Zhumadian,139,0
+Enshi Tujia and Miao Autonomous Prefecture,252,4
+Ezhou,1392,49
+Huanggang,2907,121
+Huangshi,1014,36
+Jingmen,928,39
+Jingzhou,1580,48
+Qianjiang,198,9
+Shennongjia,11,0
+Shiyan,672,7
+Suizhou,1307,42
+Tianmen,496,14
+Wuhan,49540,2282
+Xiangyang,1175,34
+Xianning,836,14
+Xiantao,575,20
+Xiaogan,3518,120
+Yichang,931,32
+Changde,82,0
+Changsha,242,2
+Chenzhou,39,0
+Hengyang,48,0
+Huaihua,40,0
+Loudi,76,0
+Xiangtan,36,0
+Xiangxi,8,0
+Yiyang,60,0
+Yongzhou,44,0
+Yueyang,156,1
+Zhangjiajie,5,0
+Zhuzhou,80,0

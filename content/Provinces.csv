@@ -1,0 +1,211 @@
+﻿provinceEnglishName,cityEnglishName,province_confirmedCount,province_deadCount
+Anhui,Anqing,990,6
+Anhui,Bengbu,990,6
+Anhui,Bozhou,990,6
+Anhui,Chizhou,990,6
+Anhui,Chuzhou,990,6
+Anhui,Fuyang,990,6
+Anhui,Hefei,990,6
+Anhui,Huaibei,990,6
+Anhui,Huainan,990,6
+Anhui,Huangshan,990,6
+Anhui,Lu'an,990,6
+Anhui,Ma'anshan,990,6
+Anhui,Suzhou,990,6
+Anhui,Tongling,990,6
+Anhui,Wuhu,990,6
+Anhui,Xuancheng,990,6
+Beijing,Changping District,417,8
+Beijing,Chaoyang District,417,8
+Beijing,Daxing District,417,8
+Beijing,Dongcheng District,417,8
+Beijing,Fangshan District,417,8
+Beijing,Fengtai District,417,8
+Beijing,Haidian District,417,8
+Beijing,Huairou District,417,8
+Beijing,Mentougou District,417,8
+Chongqing,Banan District,576,6
+Chongqing,Bishan District,576,6
+Chongqing,Changshou District,576,6
+Chongqing,Chengkou County,576,6
+Chongqing,Dadukou District,576,6
+Chongqing,Dazu District,576,6
+Chongqing,Dianjiang County,576,6
+Chongqing,Fengdu County,576,6
+Chongqing,Fengjie County,576,6
+Chongqing,Fuling District,576,6
+Chongqing,Hechuan District,576,6
+Chongqing,Jiangbei District,576,6
+Chongqing,Jiangjin District,576,6
+Chongqing,Jiulongpo District,576,6
+Chongqing,Kaizhou District,576,6
+Chongqing,Liangjiang New Area,576,6
+Chongqing,Liangping District,576,6
+Chongqing,Nan'an District,576,6
+Chongqing,Pengshui Miao and Tujia Autonomous County,576,6
+Chongqing,Qianjiang Tujia and Miao Autonomous County,576,6
+Chongqing,Qijiang District,576,6
+Chongqing,Rongchang District,576,6
+Chongqing,Shapingba District,576,6
+Chongqing,Shizhu Tujia Autonomous County,576,6
+Chongqing,Tongliang District,576,6
+Chongqing,Tongnan District,576,6
+Chongqing,Wansheng District,576,6
+Chongqing,Wanzhou District,576,6
+Chongqing,Wulong District,576,6
+Chongqing,Wushan County,576,6
+Chongqing,Wuxi County,576,6
+Chongqing,Xiushan Tujia and Miao Autonomous County,576,6
+Chongqing,Yongchuan District,576,6
+Chongqing,Youyang Tujia and Miao Autonomous County,576,6
+Chongqing,Yubei District,576,6
+Chongqing,Yunyang County,576,6
+Chongqing,Yuzhong District,576,6
+Chongqing,Zhong County,576,6
+Chongqing,,576,6
+Fujian,Fuzhou,296,1
+Fujian,Longyan,296,1
+Fujian,Nanping,296,1
+Fujian,Ningde,296,1
+Fujian,Putian,296,1
+Fujian,Quanzhou,296,1
+Fujian,Sanming,296,1
+Fujian,Xiamen,296,1
+Fujian,Zhangzhou,296,1
+Gansu,Baiyin,91,2
+Gansu,Dingxi,91,2
+Gansu,Gannan,91,2
+Gansu,Lanzhou,91,2
+Gansu,Linxia,91,2
+Gansu,Longnan,91,2
+Gansu,Pingliang,91,2
+Gansu,Qingyang,91,2
+Gansu,Tianshui,91,2
+Guangdong,Chaozhou,1350,7
+Guangdong,Dongguan,1350,7
+Guangdong,Foshan,1350,7
+Guangdong,Guangzhou,1350,7
+Guangdong,Heyuan,1350,7
+Guangdong,Huizhou,1350,7
+Guangdong,Jiangmen,1350,7
+Guangdong,Jieyang,1350,7
+Guangdong,Maoming,1350,7
+Guangdong,Meizhou,1350,7
+Guangdong,Qingyuan,1350,7
+Guangdong,Shantou,1350,7
+Guangdong,Shanwei,1350,7
+Guangdong,Shaoguan,1350,7
+Guangdong,Shenzhen,1350,7
+Guangdong,Yangjiang,1350,7
+Guangdong,Zhanjiang,1350,7
+Guangdong,Zhaoqing,1350,7
+Guangdong,Zhongshan,1350,7
+Guangdong,Zhuhai,1350,7
+Guangxi,Baise,252,2
+Guangxi,Beihai,252,2
+Guangxi,Fangchenggang,252,2
+Guangxi,Guigang,252,2
+Guangxi,Guilin,252,2
+Guangxi,Hechi,252,2
+Guangxi,Hezhou,252,2
+Guangxi,Laibin,252,2
+Guangxi,Liuzhou,252,2
+Guangxi,Nanning,252,2
+Guangxi,Qinzhou,252,2
+Guangxi,Wuzhou,252,2
+Guangxi,Yulin,252,2
+Guizhou,Anshun,146,2
+Guizhou,Bijie,146,2
+Guizhou,Guiyang,146,2
+Guizhou,Liupanshui,146,2
+Guizhou,Qiandongnan,146,2
+Guizhou,Qiannan,146,2
+Guizhou,Qianxinan,146,2
+Guizhou,Tongren,146,2
+Guizhou,Zunyi,146,2
+Hainan,Baoting Li and Miao Autonomous County,168,5
+Hainan,Changjiang Li Autonomous County,168,5
+Hainan,Chengmai County,168,5
+Hainan,Danzhou,168,5
+Hainan,Ding'an County,168,5
+Hainan,Dongfang,168,5
+Hainan,Haikou,168,5
+Hainan,Ledong Li Autonomous County,168,5
+Hainan,Lingao County,168,5
+Hainan,Lingshui Li Autonomous County,168,5
+Hainan,Qionghai,168,5
+Hainan,Qiongzhong Li and Miao Autonomous County,168,5
+Hainan,Sanya,168,5
+Hainan,Wanning,168,5
+Hainan,Wenchang,168,5
+Hebei,Baoding,318,6
+Hebei,Cangzhou,318,6
+Hebei,Handan,318,6
+Hebei,Hengshui,318,6
+Hebei,Langfang,318,6
+Hebei,Qinhuangdao,318,6
+Hebei,Shijiazhuang,318,6
+Hebei,Tangshan,318,6
+Hebei,Xingtai,318,6
+Hebei,Zhangjiakou,318,6
+Heilongjiang,Daqing,480,13
+Heilongjiang,Daxinganling,480,13
+Heilongjiang,Harbin,480,13
+Heilongjiang,Hegang,480,13
+Heilongjiang,Heihe,480,13
+Heilongjiang,Jiamusi,480,13
+Heilongjiang,Jixi,480,13
+Heilongjiang,Mudanjiang,480,13
+Heilongjiang,Qiqihar,480,13
+Heilongjiang,Qitaihe,480,12
+Heilongjiang,Shuangyashan,480,13
+Heilongjiang,Suihua,480,13
+Heilongjiang,Yichun,480,13
+Henan,Anyang,1272,22
+Henan,Hebi,1272,22
+Henan,Jiaozuo,1272,22
+Henan,Jiyuan,1272,22
+Henan,Kaifeng,1272,22
+Henan,Luohe,1272,22
+Henan,Luoyang,1272,20
+Henan,Nanyang,1272,22
+Henan,Pingdingshan,1272,22
+Henan,Puyang,1272,22
+Henan,Sanmenxia,1272,22
+Henan,Shangqiu,1272,22
+Henan,Xinxiang,1272,22
+Henan,Xinyang,1272,22
+Henan,Xuchang,1272,22
+Henan,Zhengzhou,1272,22
+Henan,Zhoukou,1272,22
+Henan,Zhumadian,1272,22
+Hubei,Enshi Tujia and Miao Autonomous Prefecture,67332,2871
+Hubei,Ezhou,67332,2871
+Hubei,Huanggang,67332,2871
+Hubei,Huangshi,67332,2871
+Hubei,Jingmen,67332,2871
+Hubei,Jingzhou,67332,2871
+Hubei,Qianjiang,67332,2871
+Hubei,Shennongjia,67332,2871
+Hubei,Shiyan,67332,2871
+Hubei,Suizhou,67332,2871
+Hubei,Tianmen,67332,2871
+Hubei,Wuhan,67332,2871
+Hubei,Xiangyang,67332,2871
+Hubei,Xianning,67332,2871
+Hubei,Xiantao,67332,2871
+Hubei,Xiaogan,67332,2871
+Hubei,Yichang,67332,2871
+Hunan,Changde,1018,4
+Hunan,Changsha,1018,4
+Hunan,Chenzhou,1018,4
+Hunan,Hengyang,1018,4
+Hunan,Huaihua,1018,4
+Hunan,Loudi,1018,4
+Hunan,Xiangtan,1018,4
+Hunan,Xiangxi,1018,4
+Hunan,Yiyang,1018,4
+Hunan,Yongzhou,1018,4
+Hunan,Yueyang,1018,4
+Hunan,Zhangjiajie,1018,4
+Hunan,Zhuzhou,1018,4

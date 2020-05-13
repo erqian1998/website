@@ -1,0 +1,23 @@
+---
+title: My New Post
+author: ''
+date: '2020-05-13'
+slug: my-new-post
+categories: []
+tags: []
+description: ''
+---
+```{python}
+# this is a python code chunk
+x=2020
+y=05
+z=13
+```
+
+```{R}
+#this is an r code chunk!
+library(reticulate)
+py$x+py$y+py$z
+
+
+
