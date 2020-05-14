@@ -10,14 +10,15 @@ description: ''
 ```{python}
 # this is a python code chunk
 x=2020
-y=05
+s="apple"
+y=len(s)
 z=13
 ```
 
 ```{R}
-#this is an r code chunk!
+#this is an r code chunk
 library(reticulate)
 py$x+py$y+py$z
+date= print(py$x, py$y, py$z)
 
-
-
+![](/blog/2020-05-13-my-new-post_files/UT.jpg)
