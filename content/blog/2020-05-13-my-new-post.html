@@ -12,9 +12,19 @@ description: ''
 
 <pre class="python"><code># this is a python code chunk
 x=2020
-y=05
+s=&quot;apple&quot;
+y=len(s)
 z=13</code></pre>
-<pre class="r"><code>#this is an r code chunk!
+<pre class="r"><code>#this is an r code chunks
 library(reticulate)
 py$x+py$y+py$z</code></pre>
 <pre><code>## [1] 2038</code></pre>
+<pre class="r"><code>list(py$x, py$y, py$z)</code></pre>
+<pre><code>## [[1]]
+## [1] 2020
+## 
+## [[2]]
+## [1] 5
+## 
+## [[3]]
+## [1] 13</code></pre>
