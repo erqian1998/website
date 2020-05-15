@@ -20,4 +20,5 @@ z=13
 library(reticulate)
 py$x+py$y+py$z
 list(py$x, py$y, py$z)
-
+```
+![](/blog/2020-05-13-my-new-post_files/UT.jpg)
